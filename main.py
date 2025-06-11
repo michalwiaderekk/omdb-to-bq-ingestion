@@ -3,12 +3,13 @@ import requests
 import json
 from google.cloud import bigquery, storage
 from datetime import datetime
+import os
 
-API_KEY = 'd80ddb62'  # request_json['api_key']
+API_KEY = os.environ.get('API_KEY')  # request_json['api_key']
+PROJECT_ID = os.environ.get('PROJECT_ID') 
+DATASET_ID = os.environ.get('DATASET_ID') 
+TABLE_ID = os.environ.get('TABLE_ID') 
 BASE_URL = 'http://www.omdbapi.com/'
-PROJECT_ID = 'futureminds-omdb'
-DATASET_ID = 'omdb_raw'
-TABLE_ID = 'film_raw'
 
 @functions_framework.http
 def ingest_omdb_film(request):
