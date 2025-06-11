@@ -11,6 +11,11 @@ steps:
       - --region=europe-central2
       - --source=.
       - --project=$_PROJECT_ID
+      - --service-account=$_SERVICE_ACCOUNT
       - --set-secrets=API_KEY=$_SECRET_NAME:latest
       - --set-env-vars=PROJECT_ID=$_PROJECT_ID,DATASET_ID=$_DATA_SET_ID,TABLE_ID=$_TABLE_ID
+
 timeout: 600s
+
+options:
+  logging: CLOUD_LOGGING_ONLY
