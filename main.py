@@ -1,0 +1,34 @@
+import functions_framework
+import requests
+import json
+from google.cloud import bigquery, storage
+from datetime import datetime
+
+API_KEY = 'd80ddb62'  # request_json['api_key']
+BASE_URL = 'http://www.omdbapi.com/'
+PROJECT_ID = 'futureminds-omdb'
+DATASET_ID = 'omdb_raw'
+TABLE_ID = 'film_raw'
+
+@functions_framework.http
+def ingest_omdb_film(request):
+    request_json = request.get_json(silent=True)
+    title = request_json['title']
+
+    bq_client = bigquery.Client(project=PROJECT_ID)
+
+    print(f"Processing: {title}")
+    params = {
+        't': title,
+        'apikey': API_KEY
+    }
+    try:
+        response = requests.get(BASE_URL, params=params, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('Response') == 'True':
+                bq_client.insert_rows_json(f'{DATASET_ID}.{TABLE_ID}',[data])
+    except Exception as e:
+        print(f"Error for title '{title}': {e}")
+
+    return 'Success!'
